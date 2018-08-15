@@ -13,11 +13,14 @@ import (
 
 //Server wraps API configurations.
 type Server struct {
+	Engine   *gin.Engine
+	Settings *Settings
+
 	DIBuilder *di.Builder
 	Container di.Container
-	Engine    *gin.Engine
-	Settings  *Settings
-	Router    *gin.RouterGroup
+
+	router      *gin.RouterGroup
+	controllers []string
 }
 
 //Settings stores some configs about how the API will woks.
@@ -61,18 +64,18 @@ func Configure(generator SettingGenerator) *Server {
 		c.AbortWithStatus(http.StatusNotFound)
 	})
 
-	server.Router = server.Engine.Group(server.Settings.BasePath)
+	server.router = server.Engine.Group(server.Settings.BasePath)
 
 	if server.Settings.SwaggerPath == "" {
 		panic("Swagger path is needed.")
 	}
 
-	server.Router.Use(server.containerHandler())
-	server.Router.Use(server.healtz())
-	server.Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	server.router.Use(server.containerHandler())
+	server.router.Use(server.healtz())
+	server.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if server.Settings.Authorize {
-		server.Router.Use(AuthMiddleware(
+		server.router.Use(AuthMiddleware(
 			NewAuthService(
 				server.Settings.Authorization.JwksURI,
 				server.Settings.Authorization.Issuer,
@@ -84,9 +87,25 @@ func Configure(generator SettingGenerator) *Server {
 	return server
 }
 
+//AddDependency register a new dependency in DI container.
+func (server *Server) AddDependency(def di.Def) error {
+	return server.DIBuilder.Add(def)
+}
+
+//AddController register a new controller to be added to routes.
+func (server *Server) AddController(def di.Def) error {
+	server.controllers = append(server.controllers, def.Name)
+	return server.DIBuilder.Add(def)
+}
+
 //Run starts the server.
 func (server *Server) Run() {
 	server.Container = server.DIBuilder.Build()
+
+	for _, ctrl := range server.extractControllers() {
+		ctrl.RegisterRoutes(server.router)
+	}
+
 	err := server.Engine.Run(server.Settings.Host)
 
 	if err != nil {
@@ -149,4 +168,21 @@ func (server *Server) healtz() gin.HandlerFunc {
 		}
 		c.JSON(http.StatusOK, healthz)
 	}
+}
+
+func (server *Server) extractControllers() []Controller {
+	var ctrls []Controller
+
+	for _, name := range server.controllers {
+		def := server.Container.Get(name)
+		ctrl, ok := def.(Controller)
+
+		if !ok {
+			panic("Defs added in AddController must implements Controller")
+		}
+
+		ctrls = append(ctrls, ctrl)
+	}
+
+	return ctrls
 }
