@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"github.com/sarulabs/di"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -19,27 +18,11 @@ type Server struct {
 	DIBuilder *di.Builder
 	Container di.Container
 
+	Healthz HealthzHandler
+
 	router      *gin.RouterGroup
 	controllers []string
 }
-
-//Settings stores some configs about how the API will woks.
-type Settings struct {
-	Host          string
-	EnvsPath      string
-	Authorize     bool
-	Authorization struct {
-		JwksURI  string
-		Issuer   string
-		Audience []string
-	}
-	SwaggerPath string
-	BasePath    string
-	Healthz     func() interface{}
-}
-
-//SettingGenerator creates a instance of Settings.
-type SettingGenerator func() *Settings
 
 var (
 	containerKey       = "di-container"
@@ -47,9 +30,10 @@ var (
 )
 
 //Configure creates a new API server
-func Configure(generator SettingGenerator) *Server {
+func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 	server := &Server{}
 	server.Settings = generator()
+	server.Healthz = healthz
 
 	builder, err := di.NewBuilder()
 
@@ -65,10 +49,6 @@ func Configure(generator SettingGenerator) *Server {
 	})
 
 	server.router = server.Engine.Group(server.Settings.BasePath)
-
-	if server.Settings.SwaggerPath == "" {
-		panic("Swagger path is needed.")
-	}
 
 	server.router.Use(server.containerHandler())
 	server.router.Use(server.healtz())
@@ -130,20 +110,6 @@ func Container(c *gin.Context) (di.Container, error) {
 	return di, nil
 }
 
-//DotEnv generates settings using environment variables.
-func DotEnv(files ...string) SettingGenerator {
-	err := godotenv.Load(files...)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return func() *Settings {
-		//TODO: define pattern and build envs here.
-		return &Settings{}
-	}
-}
-
 func (server *Server) containerHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if server.Container != nil {
@@ -157,16 +123,6 @@ func (server *Server) containerHandler() gin.HandlerFunc {
 			c.Set(containerKey, container)
 		}
 		c.Next()
-	}
-}
-
-func (server *Server) healtz() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var healthz interface{}
-		if server.Settings.Healthz != nil {
-			healthz = server.Settings.Healthz()
-		}
-		c.JSON(http.StatusOK, healthz)
 	}
 }
 
