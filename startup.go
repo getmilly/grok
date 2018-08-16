@@ -9,6 +9,7 @@ import (
 	"github.com/sarulabs/di"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"github.com/swaggo/swag"
 )
 
 //Server wraps API configurations.
@@ -59,6 +60,10 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 
 	server.router.Use(server.containerHandler())
 	server.router.GET("/healthz", server.healtz())
+
+	doc := NewSwaggerDoc(server.Settings.SwaggerPath)
+	swag.Register(swag.Name, doc)
+
 	server.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if server.Settings.Authorize {
