@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"net/http"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sarulabs/di"
@@ -22,6 +23,8 @@ type Server struct {
 
 	router      *gin.RouterGroup
 	controllers []string
+
+	mu sync.Mutex
 }
 
 var (
@@ -35,6 +38,8 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 	server.Settings = generator()
 	server.Healthz = healthz
 
+	LogWithApplication(server.Settings.ApplicationName)
+
 	builder, err := di.NewBuilder()
 
 	if err != nil {
@@ -42,7 +47,9 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 	}
 
 	server.DIBuilder = builder
-	server.Engine = gin.Default()
+	server.Engine = gin.New()
+	server.Engine.Use(LogMiddleware())
+	server.Engine.Use(gin.Recovery())
 
 	server.Engine.NoRoute(func(c *gin.Context) {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -69,11 +76,15 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 
 //AddDependency register a new dependency in DI container.
 func (server *Server) AddDependency(def di.Def) error {
+	server.mu.Lock()
+	defer server.mu.Unlock()
 	return server.DIBuilder.Add(def)
 }
 
 //AddController register a new controller to be added to routes.
 func (server *Server) AddController(def di.Def) error {
+	server.mu.Lock()
+	defer server.mu.Unlock()
 	server.controllers = append(server.controllers, def.Name)
 	return server.DIBuilder.Add(def)
 }

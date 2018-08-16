@@ -17,7 +17,8 @@ type Settings struct {
 		Issuer   string
 		Audience []string
 	}
-	BasePath string
+	BasePath        string
+	ApplicationName string
 }
 
 //SettingGenerator creates a instance of Settings.
@@ -50,12 +51,14 @@ func DotEnv(files ...string) SettingGenerator {
 
 		host := os.Getenv("HOST")
 		basePath := os.Getenv("BASE_PATH")
+		appName := os.Getenv("APPLICATION_NAME")
 
 		return &Settings{
-			Host:          host,
-			BasePath:      basePath,
-			Authorize:     authorize,
-			Authorization: authorization,
+			Host:            host,
+			BasePath:        basePath,
+			Authorize:       authorize,
+			Authorization:   authorization,
+			ApplicationName: appName,
 		}
 	}
 }

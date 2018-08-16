@@ -147,6 +147,14 @@
   version = "v2.0.0"
 
 [[projects]]
+  digest = "1:d867dfa6751c8d7a435821ad3b736310c2ed68945d05b50fb9d23aee0540c8cc"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
+  version = "v1.0.6"
+
+[[projects]]
   digest = "1:549284806d9fc8fea01d91d713372d8ad30091dda2ad0501511d0f009eb59823"
   name = "github.com/swaggo/gin-swagger"
   packages = [
@@ -183,12 +191,13 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:405d5b3531202852e61005c13901d86d94e104f80e2aa8764e6d42225313fba9"
+  digest = "1:b113c2f77ee6e09a91674cdc763197b51d2734cdc7b55a8360f890d2146c9d6b"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
     "ed25519/internal/edwards25519",
     "pbkdf2",
+    "ssh/terminal",
   ]
   pruneopts = "UT"
   revision = "de0752318171da717af4ce24d0a2e8626afaeb11"
@@ -208,9 +217,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0316a8ad208917f1d141b077e278980fd5e4594f3a85f835dacbf24d85798252"
+  digest = "1:22cda7d49c4976c41f50130f969d188699e8d56033d89f84945508c1e7327e41"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows",
+  ]
   pruneopts = "UT"
   revision = "4e1fef5609515ec7a2cee7b5de30ba6d9b438cbf"
 
@@ -275,6 +287,7 @@
     "github.com/gin-gonic/gin",
     "github.com/joho/godotenv",
     "github.com/sarulabs/di",
+    "github.com/sirupsen/logrus",
     "github.com/swaggo/gin-swagger",
     "github.com/swaggo/gin-swagger/swaggerFiles",
     "github.com/thoas/go-funk",
