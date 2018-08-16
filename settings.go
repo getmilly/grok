@@ -25,8 +25,8 @@ type Settings struct {
 //SettingGenerator creates a instance of Settings.
 type SettingGenerator func() *Settings
 
-//DotEnv generates settings using environment variables.
-func DotEnv(files ...string) SettingGenerator {
+//SettingsFromDotEnv generates settings using environment variables.
+func SettingsFromDotEnv(files ...string) SettingGenerator {
 	return func() *Settings {
 		err := godotenv.Load(files...)
 
