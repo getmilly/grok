@@ -58,7 +58,7 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 	server.router = server.Engine.Group(server.Settings.BasePath)
 
 	server.router.Use(server.containerHandler())
-	server.router.Use(server.healtz())
+	server.router.GET("/healthz", server.healtz())
 	server.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if server.Settings.Authorize {
