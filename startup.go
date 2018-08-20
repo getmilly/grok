@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sync"
 
+	logging "bitbucket.org/project-heartz/hefesto-logging"
 	"github.com/gin-gonic/gin"
 	"github.com/sarulabs/di"
 	"github.com/swaggo/gin-swagger"
@@ -39,7 +40,7 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 	server.Settings = generator()
 	server.Healthz = healthz
 
-	LogWithApplication(server.Settings.ApplicationName)
+	logging.LogWithApplication(server.Settings.ApplicationName)
 
 	builder, err := di.NewBuilder()
 

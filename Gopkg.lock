@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:a5b45d4704ea7877261df5f9637cfa4aacb9604438edff8e9c85cf7d09a73ba1"
+  name = "bitbucket.org/project-heartz/hefesto-logging"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "26d6af0da2a748d6ea65bdb9314d913f7e13bd6e"
+
+[[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
   name = "github.com/PuerkitoBio/purell"
   packages = ["."]
@@ -137,6 +145,14 @@
   pruneopts = "UT"
   revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
   version = "1.0.1"
+
+[[projects]]
+  digest = "1:361de06aa7ae272616cbe71c3994a654cc6316324e30998e650f7765b20c5b33"
+  name = "github.com/pborman/uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e790cca94e6cc75c7064b1332e63811d4aae1a53"
+  version = "v1.1"
 
 [[projects]]
   digest = "1:cf335f5434cbd2a44b7ad2b68bb549ebb1908011a77b1cf67d23d191ec115ff3"
@@ -283,13 +299,16 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "bitbucket.org/project-heartz/hefesto-logging",
     "github.com/auth0-community/go-auth0",
     "github.com/gin-gonic/gin",
     "github.com/joho/godotenv",
+    "github.com/pborman/uuid",
     "github.com/sarulabs/di",
     "github.com/sirupsen/logrus",
     "github.com/swaggo/gin-swagger",
     "github.com/swaggo/gin-swagger/swaggerFiles",
+    "github.com/swaggo/swag",
     "github.com/thoas/go-funk",
     "gopkg.in/square/go-jose.v2",
   ]

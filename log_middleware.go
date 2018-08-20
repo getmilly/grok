@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	logging "bitbucket.org/project-heartz/hefesto-logging"
 	"github.com/gin-gonic/gin"
 	"github.com/pborman/uuid"
 )
@@ -39,7 +40,7 @@ func LogMiddleware() gin.HandlerFunc {
 		fields["latency"] = elapsed.Seconds()
 		fields["claims"] = c.Keys
 
-		LogWith(fields).Info(
+		logging.LogWith(fields).Info(
 			"Request incoming from %s elapsed %s completed with %d",
 			c.ClientIP(),
 			elapsed.String(),
