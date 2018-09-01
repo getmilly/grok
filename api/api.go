@@ -1,7 +1,5 @@
 package api
 
-import _ "github.com/thoas/go-funk"
-
 //Error is default interface for return errors
 type Error struct {
 	Code           string

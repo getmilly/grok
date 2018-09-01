@@ -55,6 +55,20 @@
   version = "v1.3.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:7eb4f6676d088ab3d37f57b1e29715f390866e71cfbdbfe06cf4766c021acd44"
+  name = "github.com/globalsign/mgo"
+  packages = [
+    ".",
+    "bson",
+    "internal/json",
+    "internal/sasl",
+    "internal/scram",
+  ]
+  pruneopts = "UT"
+  revision = "6f9f54af1356a8f1a83e6daf0b351ba6ed6e42c6"
+
+[[projects]]
   digest = "1:2997679181d901ac8aaf4330d11138ecf3974c6d3334995ff36f20cbd597daf8"
   name = "github.com/go-openapi/jsonpointer"
   packages = ["."]
@@ -169,6 +183,14 @@
   pruneopts = "UT"
   revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
   version = "v1.0.6"
+
+[[projects]]
+  branch = "master"
+  digest = "1:0c088044c1c1ee83e723692442df4fec9b3f2e57f7a99773485c97adfbc31695"
+  name = "github.com/streadway/amqp"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "70e15c650864f4fc47f5d3c82ea117285480895d"
 
 [[projects]]
   digest = "1:549284806d9fc8fea01d91d713372d8ad30091dda2ad0501511d0f009eb59823"
@@ -302,10 +324,13 @@
     "bitbucket.org/project-heartz/hefesto-logging",
     "github.com/auth0-community/go-auth0",
     "github.com/gin-gonic/gin",
+    "github.com/globalsign/mgo",
+    "github.com/globalsign/mgo/bson",
     "github.com/joho/godotenv",
     "github.com/pborman/uuid",
     "github.com/sarulabs/di",
     "github.com/sirupsen/logrus",
+    "github.com/streadway/amqp",
     "github.com/swaggo/gin-swagger",
     "github.com/swaggo/gin-swagger/swaggerFiles",
     "github.com/swaggo/swag",

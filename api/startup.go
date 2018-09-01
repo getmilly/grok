@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"sync"
 
-	logging "bitbucket.org/project-heartz/hefesto-logging"
 	"github.com/gin-gonic/gin"
+	"github.com/myheartz/grok/logging"
 	"github.com/sarulabs/di"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"

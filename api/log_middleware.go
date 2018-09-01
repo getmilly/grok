@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	logging "bitbucket.org/project-heartz/hefesto-logging"
 	"github.com/gin-gonic/gin"
+	"github.com/myheartz/grok/logging"
 	"github.com/pborman/uuid"
 )
 
