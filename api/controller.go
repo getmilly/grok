@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/gin-gonic/gin"
+	"github.com/myheartz/grok/models"
 )
 
 //Controller ...
@@ -16,13 +17,13 @@ type Controller interface {
 func ResolveError(context *gin.Context, err error) {
 	context.Error(err)
 
-	if reflect.TypeOf(err) != reflect.TypeOf(Error{}) {
+	if reflect.TypeOf(err) != reflect.TypeOf(models.Error{}) {
 		context.Status(http.StatusInternalServerError)
 		return
 	}
 
 	status := http.StatusBadRequest
-	message := err.(Error)
+	message := err.(models.Error)
 
 	if message.HTTPStatusCode != 0 {
 		status = message.HTTPStatusCode
@@ -34,6 +35,6 @@ func ResolveError(context *gin.Context, err error) {
 //BindingError ...
 func BindingError(context *gin.Context, err error) {
 	context.Error(err)
-	message := Error{Code: "000", Message: err.Error()}
+	message := models.Error{Code: "000", Message: err.Error()}
 	context.JSON(http.StatusBadRequest, message)
 }

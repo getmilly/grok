@@ -64,3 +64,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/streadway/amqp"
+
+[[constraint]]
+  name = "github.com/nats-io/go-nats"
+  version = "1.7.2"
