@@ -1,9 +1,12 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"net/http"
-	"sync"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/myheartz/grok/logging"
@@ -21,12 +24,10 @@ type Server struct {
 	DIBuilder *di.Builder
 	Container di.Container
 
-	Healthz HealthzHandler
+	Healthz *HealthChecks
 
 	router      *gin.RouterGroup
 	controllers []string
-
-	mu sync.Mutex
 }
 
 var (
@@ -34,8 +35,8 @@ var (
 	errContainerNotSet = errors.New("container not set in request scope")
 )
 
-//Configure creates a new API server
-func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
+//ConfigureServer creates a new API server
+func ConfigureServer(generator SettingGenerator, healthz *HealthChecks) *Server {
 	server := &Server{}
 	server.Settings = generator()
 	server.Healthz = healthz
@@ -50,7 +51,7 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 
 	server.DIBuilder = builder
 	server.Engine = gin.New()
-	server.Engine.Use(LogMiddleware())
+	server.Engine.Use(Logging())
 	server.Engine.Use(gin.Recovery())
 
 	server.Engine.NoRoute(func(c *gin.Context) {
@@ -60,7 +61,9 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 	server.router = server.Engine.Group(server.Settings.BasePath)
 
 	server.router.Use(server.containerHandler())
-	server.router.GET("/healthz", server.healtz())
+	server.router.GET("/metrics", server.metrics())
+	server.router.GET("/healthz/liveness", server.liveness())
+	server.router.GET("/healthz/readiness", server.readiness())
 
 	doc := NewSwaggerDoc(server.Settings.SwaggerPath)
 	swag.Register(swag.Name, doc)
@@ -68,7 +71,7 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 	server.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if server.Settings.Authorize {
-		server.router.Use(AuthMiddleware(
+		server.router.Use(Authentication(
 			NewAuthService(
 				server.Settings.Authorization.JwksURI,
 				server.Settings.Authorization.Issuer,
@@ -82,15 +85,11 @@ func Configure(generator SettingGenerator, healthz HealthzHandler) *Server {
 
 //AddDependency register a new dependency in DI container.
 func (server *Server) AddDependency(def di.Def) error {
-	server.mu.Lock()
-	defer server.mu.Unlock()
 	return server.DIBuilder.Add(def)
 }
 
 //AddController register a new controller to be added to routes.
 func (server *Server) AddController(def di.Def) error {
-	server.mu.Lock()
-	defer server.mu.Unlock()
 	server.controllers = append(server.controllers, def.Name)
 	return server.DIBuilder.Add(def)
 }
@@ -103,10 +102,29 @@ func (server *Server) Run() {
 		ctrl.RegisterRoutes(server.router)
 	}
 
-	err := server.Engine.Run(server.Settings.Host)
+	srv := http.Server{
+		Addr:    server.Settings.Host,
+		Handler: server.Engine,
+	}
 
-	if err != nil {
-		panic(err)
+	sigs := make(chan os.Signal)
+	signal.Notify(sigs, os.Interrupt)
+
+	go func() {
+		sig := <-sigs
+		logging.LogInfo("caught sig: %+v", sig)
+		logging.LogInfo("waiting 5 seconds to finish processing")
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		if err := srv.Shutdown(ctx); err != nil {
+			logging.LogWith(err).Error("shotdown error")
+		}
+	}()
+
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		logging.LogWith(err).Info("startup error")
 	}
 }
 

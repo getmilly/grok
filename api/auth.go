@@ -67,8 +67,8 @@ func (service auth) Authorize(req *http.Request) (Claims, error) {
 	return claims, nil
 }
 
-//AuthMiddleware authorizes a request agains an auth service.
-func AuthMiddleware(service AuthService) gin.HandlerFunc {
+//Authentication authenticates a request against an auth service.
+func Authentication(service AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		claims, err := service.Authorize(c.Request)
 

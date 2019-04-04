@@ -3,13 +3,13 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/myheartz/grok/logging"
-	"github.com/pborman/uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 type bodyLogWriter struct {
@@ -17,28 +17,38 @@ type bodyLogWriter struct {
 	body *bytes.Buffer
 }
 
-//LogMiddleware ...
-func LogMiddleware() gin.HandlerFunc {
+func (w *bodyLogWriter) Write(b []byte) (int, error) {
+	w.body.Write(b)
+	return w.ResponseWriter.Write(b)
+}
+
+//Logging ...
+func Logging() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		requestID := uuid.New()
+		defer recovery()
+		defer c.Request.Body.Close()
+
+		requestID := uuid.NewV4()
 
 		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
-		blw.Header().Set("Request-Id", requestID)
+		blw.Header().Set("Request-Id", requestID.String())
 		c.Writer = blw
 
 		now := time.Now()
+		req := request(c)
 
 		c.Next()
 
 		elapsed := time.Since(now)
 		fields := make(map[string]interface{})
 
-		fields["ip"] = c.ClientIP()
-		fields["request"] = request(c)
-		fields["request_id"] = requestID
-		fields["response"] = response(blw)
-		fields["latency"] = elapsed.Seconds()
+		fields["request"] = req
 		fields["claims"] = c.Keys
+		fields["errors"] = c.Errors
+		fields["ip"] = c.ClientIP()
+		fields["latency"] = elapsed.Seconds()
+		fields["request_id"] = requestID.String()
+		fields["response"] = blw
 
 		logging.LogWith(fields).Info(
 			"Request incoming from %s elapsed %s completed with %d",
@@ -52,19 +62,25 @@ func LogMiddleware() gin.HandlerFunc {
 func request(context *gin.Context) interface{} {
 	r := make(map[string]interface{})
 
-	var body interface{}
-	requestBody(context.Request, &body)
+	bodyCopy := new(bytes.Buffer)
+	io.Copy(bodyCopy, context.Request.Body)
+	bodyData := bodyCopy.Bytes()
+
+	var body map[string]interface{}
+	json.Unmarshal(bodyData, &body)
 
 	r["body"] = body
+	r["headers"] = context.Request.Header
 	r["host"] = context.Request.Host
 	r["form"] = context.Request.Form
 	r["path"] = context.Request.URL.Path
 	r["method"] = context.Request.Method
-	r["headers"] = context.Request.Header
 	r["url"] = context.Request.URL.String()
 	r["post_form"] = context.Request.PostForm
 	r["remote_addr"] = context.Request.RemoteAddr
 	r["query_string"] = context.Request.URL.Query()
+
+	context.Request.Body = ioutil.NopCloser(bytes.NewReader(bodyData))
 
 	return r
 }
@@ -72,29 +88,31 @@ func request(context *gin.Context) interface{} {
 func response(writer *bodyLogWriter) interface{} {
 	r := make(map[string]interface{})
 
-	r["status"] = writer.Status()
-	r["headers"] = writer.Header()
-
-	var body interface{}
+	var body map[string]interface{}
 	json.Unmarshal(writer.body.Bytes(), &body)
 
 	r["body"] = body
+	r["status"] = writer.Status()
+	r["headers"] = writer.Header()
 
 	return r
 }
 
-func requestBody(request *http.Request, v interface{}) {
-	body, err := ioutil.ReadAll(request.Body)
-
-	if err == nil {
-		return
-	}
-
-	var rBody interface{}
-	json.Unmarshal(body, &rBody)
+func marshal(v interface{}) string {
+	b, _ := json.Marshal(v)
+	return string(b)
 }
 
-func (w bodyLogWriter) Write(b []byte) (int, error) {
-	w.body.Write(b)
-	return w.ResponseWriter.Write(b)
+func unmarshal(str string) interface{} {
+	v := make(map[string]interface{})
+
+	json.Unmarshal([]byte(str), &v)
+
+	return v
+}
+
+func recovery() {
+	if err := recover(); err != nil {
+		logging.LogWith(err).Error("Error on logging middleware")
+	}
 }

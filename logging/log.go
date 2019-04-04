@@ -2,15 +2,13 @@ package logging
 
 import (
 	"os"
-	"sync"
 
 	"github.com/sirupsen/logrus"
 )
 
 //Logger ...
 type Logger struct {
-	AppName string
-	mu      sync.Mutex
+	applicationName string
 }
 
 //LogEntry ...
@@ -37,9 +35,7 @@ func NewLogger() *Logger {
 
 //LogWithApplication configure logger to use specified app name.
 func LogWithApplication(appName string) {
-	logger.mu.Lock()
-	defer logger.mu.Unlock()
-	logger.AppName = appName
+	logger.applicationName = appName
 }
 
 //LogWarn logs an event
@@ -73,20 +69,20 @@ func (e *LogEntry) Error(message string, args ...interface{}) {
 }
 
 //LogWith ...
-func LogWith(source interface{}) *LogEntry {
-	fields := buildSource(source)
+func LogWith(data interface{}) *LogEntry {
+	fields := buildData(data)
 	entry := logrus.WithFields(fields)
 	return &LogEntry{
 		entry: entry,
 	}
 }
 
-func buildSource(source interface{}) logrus.Fields {
+func buildData(data interface{}) logrus.Fields {
 	fields := make(logrus.Fields)
 
-	fields["source"] = source
+	fields["data"] = data
 	fields["hostname"], _ = os.Hostname()
-	fields["application_name"] = logger.AppName
+	fields["application_name"] = logger.applicationName
 
 	return fields
 }

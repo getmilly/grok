@@ -2,14 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
-  digest = "1:a5b45d4704ea7877261df5f9637cfa4aacb9604438edff8e9c85cf7d09a73ba1"
-  name = "bitbucket.org/project-heartz/hefesto-logging"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "26d6af0da2a748d6ea65bdb9314d913f7e13bd6e"
-
-[[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
   name = "github.com/PuerkitoBio/purell"
   packages = ["."]
@@ -32,6 +24,14 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "64af396f3935a5bdd005898a3a190fa8b4d8e56e"
+
+[[projects]]
+  branch = "master"
+  digest = "1:d6afaeed1502aa28e80a4ed0981d570ad91b2579193404256ce672ed0a609e0d"
+  name = "github.com/beorn7/perks"
+  packages = ["quantile"]
+  pruneopts = "UT"
+  revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
 
 [[projects]]
   branch = "master"
@@ -145,6 +145,14 @@
   version = "v0.0.3"
 
 [[projects]]
+  digest = "1:ff5ebae34cfbf047d505ee150de27e60570e8c394b3b8fdbb720ff6ac71985fc"
+  name = "github.com/matttproud/golang_protobuf_extensions"
+  packages = ["pbutil"]
+  pruneopts = "UT"
+  revision = "c12348ce28de40eed0136aa2b644d0ee0650e56c"
+  version = "v1.0.1"
+
+[[projects]]
   digest = "1:33422d238f147d247752996a26574ac48dcf472976eda7f5134015f06bf16563"
   name = "github.com/modern-go/concurrent"
   packages = ["."]
@@ -169,12 +177,60 @@
   version = "v1.1"
 
 [[projects]]
+  digest = "1:32c1cb4c09d4eb89294d52c2df910ad981aa8d47f06fee22f0112702cf5f4e53"
+  name = "github.com/prometheus/client_golang"
+  packages = [
+    "prometheus",
+    "prometheus/internal",
+    "prometheus/promhttp",
+  ]
+  pruneopts = "UT"
+  revision = "505eaef017263e299324067d40ca2c48f6a2cf50"
+  version = "v0.9.2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:0f37e09b3e92aaeda5991581311f8dbf38944b36a3edec61cc2d1991f527554a"
+  name = "github.com/prometheus/client_model"
+  packages = ["go"]
+  pruneopts = "UT"
+  revision = "fd36f4220a901265f90734c3183c5f0c91daa0b8"
+
+[[projects]]
+  digest = "1:404f5b09a91546084d2d791b7148df956e7ce42cd75414649ee20aefac288e51"
+  name = "github.com/prometheus/common"
+  packages = [
+    "expfmt",
+    "internal/bitbucket.org/ww/goautoneg",
+    "model",
+  ]
+  pruneopts = "UT"
+  revision = "cfeb6f9992ffa54aaa4f2170ade4067ee478b250"
+  version = "v0.2.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:f806b417865e83457c3659232926203f5b0d39aa741b71d9e3e4c0c774e71a5c"
+  name = "github.com/prometheus/procfs"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ea9eea63887261e4d8ed8315f4078e88d540c725"
+
+[[projects]]
   digest = "1:cf335f5434cbd2a44b7ad2b68bb549ebb1908011a77b1cf67d23d191ec115ff3"
   name = "github.com/sarulabs/di"
   packages = ["."]
   pruneopts = "UT"
   revision = "5754ca61d4cfc38cca8008fc56ab8c4600d47da6"
   version = "v2.0.0"
+
+[[projects]]
+  digest = "1:274f67cb6fed9588ea2521ecdac05a6d62a8c51c074c1fccc6a49a40ba80e925"
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:d867dfa6751c8d7a435821ad3b736310c2ed68945d05b50fb9d23aee0540c8cc"
@@ -210,14 +266,6 @@
   pruneopts = "UT"
   revision = "db2ee6c14a35e4fca95b0d75054296ef2b699050"
   version = "v1.3.2"
-
-[[projects]]
-  digest = "1:92d68f6e77198b5da8d32e13283d75d2ba4fe01f369bc63cdf48c77cc138bfaf"
-  name = "github.com/thoas/go-funk"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "e2f8da694c9c4fa123eea42cb0d6d47e08f11ff6"
-  version = "0.3"
 
 [[projects]]
   digest = "1:03aa6e485e528acb119fb32901cf99582c380225fc7d5a02758e08b180cb56c3"
@@ -321,20 +369,20 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "bitbucket.org/project-heartz/hefesto-logging",
     "github.com/auth0-community/go-auth0",
     "github.com/gin-gonic/gin",
     "github.com/globalsign/mgo",
     "github.com/globalsign/mgo/bson",
     "github.com/joho/godotenv",
     "github.com/pborman/uuid",
+    "github.com/prometheus/client_golang/prometheus/promhttp",
     "github.com/sarulabs/di",
+    "github.com/satori/go.uuid",
     "github.com/sirupsen/logrus",
     "github.com/streadway/amqp",
     "github.com/swaggo/gin-swagger",
     "github.com/swaggo/gin-swagger/swaggerFiles",
     "github.com/swaggo/swag",
-    "github.com/thoas/go-funk",
     "gopkg.in/square/go-jose.v2",
   ]
   solver-name = "gps-cdcl"
