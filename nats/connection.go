@@ -3,6 +3,7 @@ package nats
 import (
 	"time"
 
+	"github.com/myheartz/grok/logging"
 	nats "github.com/nats-io/go-nats"
 )
 
@@ -23,5 +24,8 @@ func Connect(address string, token string) (*nats.EncodedConn, error) {
 
 func closedHandler(conn *nats.Conn) {
 	err := conn.LastError()
-	panic(err)
+
+	if err != nil {
+		logging.LogWith(err).Error("subscription error")
+	}
 }
