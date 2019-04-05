@@ -9,7 +9,7 @@ commands:
   autotag:
     steps:
       - run: |
-          wget -O autotag https://github.com/pantheon-systems/autotag/releases/download/1.1.1/OSX && mv autotag /usr/local/bin/
+          make install-autotag
 
 jobs:
   run-tests:
