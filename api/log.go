@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/myheartz/grok/logging"
+	"github.com/getmilly/grok/logging"
 	uuid "github.com/satori/go.uuid"
 )
 

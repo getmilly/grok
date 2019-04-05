@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/myheartz/grok/logging"
+	"github.com/getmilly/grok/logging"
 	"github.com/sarulabs/di"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
