@@ -5,6 +5,11 @@ defaults: &defaults
   working_directory: /go/src/github.com/getmilly/grok
   docker:
     - image: circleci/golang:1.11
+commands:
+  autotag:
+    steps:
+      - run: |
+          wget -O autotag https://github.com/pantheon-systems/autotag/releases/download/1.1.1/OSX && mv autotag /usr/local/bin/
 
 jobs:
   run-tests:
@@ -31,6 +36,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - autotag
       - run:
           name: Tag Git Version
           command: make tag-version
