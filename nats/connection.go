@@ -3,7 +3,7 @@ package nats
 import (
 	"time"
 
-	"github.com/myheartz/grok/logging"
+	"github.com/getmilly/grok/logging"
 	nats "github.com/nats-io/go-nats"
 )
 

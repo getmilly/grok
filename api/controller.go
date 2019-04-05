@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"reflect"
 
+	"github.com/getmilly/grok/models"
 	"github.com/gin-gonic/gin"
-	"github.com/myheartz/grok/models"
 )
 
 //Controller ...
