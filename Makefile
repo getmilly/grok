@@ -4,6 +4,9 @@ endef
 
 VERSION=$(call get_version,)
 
+install-autotag:
+	wget -O autotag https://github.com/pantheon-systems/autotag/releases/download/1.1.1/Linux && sudo mv autotag /usr/local/bin/
+
 set_version:
 	autotag > current_version
 
