@@ -1,0 +1,21 @@
+version: '2.1'
+services:
+  nats:
+    image: nats-streaming
+    ports:
+      - "4222:4222"
+  unit_tests:
+    image: golang:1.11
+    container_name: unit_tests
+    links:
+      - nats:nats
+    depends_on:
+      nats:
+        condition: service_started
+    command: go test -failfast ./...
+    working_dir: /go/src/github.com/getmilly/grok
+    volumes: 
+      - ./:/go/src/github.com/getmilly/grok
+    environment:
+      - NATS_URL=nats://nats:4222
+      - NATS_CLUSTER=test-cluster
