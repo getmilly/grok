@@ -10,10 +10,12 @@ commands:
     steps:
       - run: |
           make install-autotag
-
 jobs:
   run-tests:
     <<: *defaults
+    docker:
+    - image: circleci/golang:1.11
+    - image: nats-streaming
     steps:
       - checkout
       - run:
@@ -26,12 +28,11 @@ jobs:
           name: Build Package
           command: make build-package
       - run:
+          environment:
+            NATS_URL: nats://localhost:4222
+            NATS_CLUSTER: test-cluster
           name: Run Tests
           command: make run-tests
-      - persist_to_workspace:
-          root: .
-          paths:
-              - .
   release-vesion:
     <<: *defaults
     steps:

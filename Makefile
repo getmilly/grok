@@ -14,7 +14,7 @@ run-rebase:
 	git rebase -p master 2>/dev/null | grep "Your branch is up-to-date with 'origin/master'." || echo "\nPlease rebase your branch with master!"
 
 run-tests:
-	go test -failfast -coverprofile=coverage.out ./...
+	go test -failfast ./...
 
 build-package:
 	dep ensure

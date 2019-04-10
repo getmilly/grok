@@ -34,6 +34,14 @@
   revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
   branch = "master"
   digest = "1:36fe9527deed01d2a317617e59304eb2c4ce9f8a24115bcc5c2e37b3aee5bae4"
   name = "github.com/gin-contrib/sse"
@@ -85,6 +93,18 @@
   pruneopts = "UT"
   revision = "becd2f08beafcca035645a8a101e0e3e18140458"
   version = "0.16.0"
+
+[[projects]]
+  digest = "1:8d26298f907122eb75369de2b9e8781014e28e44170b115538dcb066c31a3606"
+  name = "github.com/gogo/protobuf"
+  packages = [
+    "gogoproto",
+    "proto",
+    "protoc-gen-gogo/descriptor",
+  ]
+  pruneopts = "UT"
+  revision = "ba06b47c162d49f2af050fb4c75bcbc86a159d5c"
+  version = "v1.2.1"
 
 [[projects]]
   digest = "1:15042ad3498153684d09f393bbaec6b216c8eec6d61f63dff711de7d64ed8861"
@@ -167,6 +187,17 @@
   version = "v1.7.2"
 
 [[projects]]
+  digest = "1:7b05ff74c5adeaec9d414fe46364cc962f72b460d600a6df2e86352542951efb"
+  name = "github.com/nats-io/go-nats-streaming"
+  packages = [
+    ".",
+    "pb",
+  ]
+  pruneopts = "UT"
+  revision = "4366d43a0648b4997ed32080f937e8702ab86c48"
+  version = "v0.4.2"
+
+[[projects]]
   digest = "1:0b5d91120efc54504bc253fda90b08c4be88cd78a4023ef60019e95bb0cdc136"
   name = "github.com/nats-io/nkeys"
   packages = ["."]
@@ -180,6 +211,14 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "289cccf02c178dc782430d534e3c1f5b72af807f"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  pruneopts = "UT"
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
 
 [[projects]]
@@ -245,6 +284,14 @@
   pruneopts = "UT"
   revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
   version = "v1.0.6"
+
+[[projects]]
+  digest = "1:972c2427413d41a1e06ca4897e8528e5a1622894050e2f527b38ddf0f343f759"
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  pruneopts = "UT"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:549284806d9fc8fea01d91d713372d8ad30091dda2ad0501511d0f009eb59823"
@@ -371,10 +418,12 @@
     "github.com/gin-gonic/gin",
     "github.com/joho/godotenv",
     "github.com/nats-io/go-nats",
+    "github.com/nats-io/go-nats-streaming",
     "github.com/prometheus/client_golang/prometheus/promhttp",
     "github.com/sarulabs/di",
     "github.com/satori/go.uuid",
     "github.com/sirupsen/logrus",
+    "github.com/stretchr/testify/assert",
     "github.com/swaggo/gin-swagger",
     "github.com/swaggo/gin-swagger/swaggerFiles",
     "github.com/swaggo/swag",
