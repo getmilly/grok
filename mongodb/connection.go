@@ -21,5 +21,15 @@ func Connect(connectionString string) (*mongo.Client, error) {
 
 	err = client.Connect(ctx)
 
-	return client, err
+	if err != nil {
+		return nil, err
+	}
+
+	err = client.Ping(ctx, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }
